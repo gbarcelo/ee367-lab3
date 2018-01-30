@@ -126,12 +126,16 @@ int main(void)
 			char buf[255];
 			if (pipe(pipefd) < 0) error("pipe error");
 			if (!fork()) {	// Begin Child Process
+				close(0);
+				close(1);
+				close(2);
 				close(pipefd[0]);
 				execl("/usr/bin/ls", "ls", (char *)NULL);
+				error("ls failed")
 			} else {	// Begin Parent Process
 				close(pipefd[1]);
 				n = read(pipefd[0], buf, 250);
-				buf[n] = 0;
+				buf[n] = NULL;
 				printf("Server Response: \n\n %s \n\n", buf);
 				close(pipefd[1]);
 			}

@@ -143,7 +143,7 @@ int main(void)
 
 			// Stage 1 attempt: end [PARTIAL SUCCESS]
 			// Stage 2 attempt: replace hello world with buf
-			if (send(new_fd, buf, 13, 0) == -1)
+			if (send(new_fd, buf, sizeof(buf), 0) == -1)
 				perror("send");
 			close(new_fd);
 			exit(0);

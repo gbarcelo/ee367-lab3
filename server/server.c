@@ -15,7 +15,9 @@
 #include <sys/wait.h>
 #include <signal.h>
 
-#define PORT "3490"  // the port users will be connecting to
+// Temporary PORT for local testing:
+#define PORT "9002"
+//#define PORT "3490"  // the port users will be connecting to
 
 #define BACKLOG 10	 // how many pending connections queue will hold
 
@@ -125,4 +127,3 @@ int main(void)
 
 	return 0;
 }
-

@@ -12,7 +12,7 @@ client/a.out: client/client.c
 	gcc client/client.c -o client/a.out
 
 run-client: client/a.out
-	./client/a.out
+	./client/a.out 2
 
 client: run-client
 

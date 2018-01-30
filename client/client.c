@@ -14,9 +14,11 @@
 
 #include <arpa/inet.h>
 
-#define PORT "3490" // the port client will be connecting to 
+// Temporary PORT for local testing:
+#define PORT "9002"
+//#define PORT "3490" // the port client will be connecting to
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once 
+#define MAXDATASIZE 100 // max number of bytes we can get at once
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
@@ -30,7 +32,7 @@ void *get_in_addr(struct sockaddr *sa)
 
 int main(int argc, char *argv[])
 {
-	int sockfd, numbytes;  
+	int sockfd, numbytes;
 	char buf[MAXDATASIZE];
 	struct addrinfo hints, *servinfo, *p;
 	int rv;
@@ -71,8 +73,9 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "client: failed to connect\n");
 		return 2;
 	}
-
-	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
+// ***********LOCAL TESTING: INADDR_ANY is local CONST
+/* get_in_addr((struct sockaddr *)p->ai_addr)  */
+	inet_ntop(p->ai_family, INADDR_ANY,
 			s, sizeof s);
 	printf("client: connecting to %s\n", s);
 
@@ -91,4 +94,3 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
-

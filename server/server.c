@@ -137,12 +137,13 @@ int main(void)
 				close(pipefd[1]);
 				n = read(pipefd[0], buf, 250);
 				buf[n] = "\0";
-				printf("Server Response: \n\n %s \n\n", buf);
+				//printf("Server Response:\n\n%s\n\n", buf);
 				close(pipefd[1]);
 			}
 
-			// Stage 1 attempt: end
-			if (send(new_fd, "Hello, world!", 13, 0) == -1)
+			// Stage 1 attempt: end [PARTIAL SUCCESS]
+			// Stage 2 attempt: replace hello world with buf
+			if (send(new_fd, buf, 13, 0) == -1)
 				perror("send");
 			close(new_fd);
 			exit(0);

@@ -14,9 +14,7 @@
 
 #include <arpa/inet.h>
 
-// Temporary PORT for local testing:
-#define PORT "9002"
-//#define PORT "3490" // the port client will be connecting to
+#define PORT "3501" // the port client will be connecting to (OLD:3490)
 
 #define MAXDATASIZE 100 // max number of bytes we can get at once
 
@@ -73,9 +71,8 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "client: failed to connect\n");
 		return 2;
 	}
-// ***********LOCAL TESTING: INADDR_ANY is local CONST
-/* get_in_addr((struct sockaddr *)p->ai_addr)  */
-	inet_ntop(p->ai_family, INADDR_ANY,
+
+	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
 			s, sizeof s);
 	printf("client: connecting to %s\n", s);
 

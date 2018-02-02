@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
 	inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
 			s, sizeof s);
 	printf("client: connecting to %s\n", s);
+	printf("type 'h' for help");
+	//EASY TO SEE COMMENT ----------------------------------------------------------
 
 	freeaddrinfo(servinfo); // all done with this structure
 

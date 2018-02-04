@@ -34,6 +34,12 @@ void *get_in_addr(struct sockaddr *sa)
 	return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+void error(char *s)
+{
+  perror(s);
+  exit(1);
+}
+
 int main(void)
 {
 	int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
@@ -115,7 +121,29 @@ int main(void)
 
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
-			if (send(new_fd, "Hello, world!", 13, 0) == -1)
+			// Stage 1 attempt: execl with pipe
+			int pid, n, pipefd[2];
+			char buf[255];
+			if (pipe(pipefd) < 0) error("pipe error");
+			if (!fork()) {	// Begin Child Process
+				// close(0);
+				// close(1);
+				// close(2);
+				close(pipefd[0]);
+				dup2(pipefd[1],1);
+				execl("/usr/bin/ls", "ls", (char *)NULL);
+				error("ls failed");
+			} else {	// Begin Parent Process
+				close(pipefd[1]);
+				n = read(pipefd[0], buf, 250);
+				buf[n] = "\0";
+				//printf("Server Response:\n\n%s\n\n", buf);
+				close(pipefd[1]);
+			}
+
+			// Stage 1 attempt: end [PARTIAL SUCCESS]
+			// Stage 2 attempt: replace hello world with buf
+			if (send(new_fd, buf, sizeof(buf), 0) == -1)
 				perror("send");
 			close(new_fd);
 			exit(0);

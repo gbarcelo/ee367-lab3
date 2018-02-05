@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 	close(sockfd);
 	char test = getchar();
 	if(test == "h"){
-		printf("Command (enter ‘h’ for help):")
+		printf("Command (enter ‘h’ for help):");
 	}
 	return 0;
 }

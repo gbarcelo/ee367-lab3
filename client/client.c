@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
 			printf("quiting...\n");
 			return 0;
 		}else{
-			printf("Command (type ‘h’ for help):");
+			printf("Command (type ‘h’ for help):\n");
 		}
 		//printf("3\n");
 		//printf("test: '%c'\n",test);

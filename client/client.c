@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
 		}
 		//printf("3\n");
 		printf("test: '%c'\n",test);
+		test = "";
 		//printf("4\n");
 		close(sockfd);
 	}

@@ -125,20 +125,16 @@ int main(void)
 			int pid, n, pipefd[2];
 			char buf[255];
 			if (pipe(pipefd) < 0) error("pipe error");
-			if (!fork()) {	// Begin Child Process
-				// close(0);
-				// close(1);
-				// close(2);
-				close(pipefd[0]);
-				dup2(pipefd[1],1);
+			if (!fork()) {	// Begin Child Process for sending "ls" to buf
+				close(pipefd[0]);		// Close read-side
+				dup2(pipefd[1],1);	// Duplicates file descriptor
 				execl("/usr/bin/ls", "ls", (char *)NULL);
 				error("ls failed");
-			} else {	// Begin Parent Process
+			} else {	// Begin Parent Process for reading buf after ls
 				close(pipefd[1]);
 				n = read(pipefd[0], buf, 250);
 				buf[n] = "\0";
-				//printf("Server Response:\n\n%s\n\n", buf);
-				close(pipefd[1]);
+				// close(pipefd[1]);
 			}
 
 			// Stage 1 attempt: end [PARTIAL SUCCESS]

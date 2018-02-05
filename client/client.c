@@ -88,6 +88,9 @@ int main(int argc, char *argv[])
 	printf("client: received '%s'\n",buf);
 
 	close(sockfd);
-
+	char test = getchar();
+	if(test == "h"){
+		printf("Command (enter ‘h’ for help):")
+	}
 	return 0;
 }

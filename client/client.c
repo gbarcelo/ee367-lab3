@@ -92,5 +92,6 @@ int main(int argc, char *argv[])
 	if(test == "h"){
 		printf("Command (enter ‘h’ for help):");
 	}
+	printf("test");
 	return 0;
 }

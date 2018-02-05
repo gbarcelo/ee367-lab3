@@ -95,6 +95,12 @@ int main(int argc, char *argv[])
 		}else if(test == 'q'){
 			printf("quiting...\n");
 			return 0;
+		}else if(test == 'l'){
+			printf("That function is not yet added\n");
+		}else if(test == 'c'){
+			printf("That function is not yet added\n");
+		}else if(test == 'p'){
+			printf("That function is not yet added\n");
 		}else{
 			printf("Command (type ‘h’ for help):\n");
 		}

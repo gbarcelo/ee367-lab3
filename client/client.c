@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 	printf("1\n");
 	char test = getchar();
 	printf("2\n");
-	if(test == "h"){
+	if(test == 'h'){
 		printf("2.5\n");
 		printf("Command (enter ‘h’ for help):\n");
 	}

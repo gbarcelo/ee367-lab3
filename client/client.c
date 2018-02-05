@@ -85,17 +85,18 @@ int main(int argc, char *argv[])
 
 	buf[numbytes] = '\0';
 	printf("client: received '%s'\n",buf);
-	printf("1\n");
-	char test = getchar();
-	printf("2\n");
-	if(test == 'h'){
-		printf("2.5\n");
-		printf("Command (enter ‘h’ for help):\n");
+	while(1){
+		printf("1\n");
+		char test = getchar();
+		printf("2\n");
+		if(test == 'h'){
+			printf("2.5\n");
+			printf("Command (enter ‘h’ for help):\n");
+		}
+		printf("3\n");
+		printf("test: %c",test);
+		printf("4\n");
+		close(sockfd);
 	}
-	printf("3\n");
-	printf("test: %s",test);
-	printf("4\n");
-	close(sockfd);
-
 	return 0;
 }

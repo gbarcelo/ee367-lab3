@@ -86,18 +86,18 @@ int main(int argc, char *argv[])
 	buf[numbytes] = '\0';
 	printf("client: received '%s'\n",buf);
 	while(1){
-		printf("1\n");
+		//printf("1\n");
 		char test = getchar();
-		printf("2\n");
+		//printf("2\n");
 		if(test == 'h'){
-			printf("2.1\n");
+			//printf("2.1\n");
 			printf("l: List: List the contents of the directory of the server.\nc: Check <file name>: Check if the server has the file named <file name>.\np: Display <file name>: Check if the server has the file named <file name>.\nd: Download <file name>:\nq: Quit: This is to terminate the client program. Otherwise the client continues.\n");
 		}else{
 			printf("Command (enter ‘h’ for help):\n");
 		}
-		printf("3\n");
+		//printf("3\n");
 		printf("test: '%c'\n",test);
-		printf("4\n");
+		//printf("4\n");
 		close(sockfd);
 	}
 	return 0;

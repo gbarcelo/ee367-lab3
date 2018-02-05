@@ -92,12 +92,14 @@ int main(int argc, char *argv[])
 		if(test == 'h'){
 			//printf("2.1\n");
 			printf("l: List: List the contents of the directory of the server.\nc: Check <file name>: Check if the server has the file named <file name>.\np: Display <file name>: Check if the server has the file named <file name>.\nd: Download <file name>:\nq: Quit: This is to terminate the client program. Otherwise the client continues.\n");
+		}else if(test == 'q'){
 		}else{
-			printf("Command (enter ‘h’ for help):\n");
+			printf("quiting...\n");
+			return 0;
 		}
 		//printf("3\n");
-		printf("test: '%c'\n",test);
-		while('\n'!=getchar());
+		//printf("test: '%c'\n",test);
+		while('\n'!=getchar());//Deletes excess chars
 		//printf("4\n");
 		close(sockfd);
 	}

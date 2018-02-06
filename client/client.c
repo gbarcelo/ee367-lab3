@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 				else {printf("\nFile `%c` exists\n", f);}
 				printf("\n");
 				printf("8\n");
-				free(*f);
+				free(&f);
 				printf("9\n");
 				break;
 			}

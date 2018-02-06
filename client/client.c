@@ -132,6 +132,10 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				printf("7\n");
+				if(arg == NULL){
+					printf("Invalid number of arguments");
+					break;
+				}
 				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");

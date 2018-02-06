@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
 			case 'c': {		//
 				scanf("%s", arg);
-				char *f[];
+				char *f;
 				//printf("%s\n", );
 				printf("1\n");
 				f = strdup(arg);

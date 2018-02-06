@@ -105,7 +105,8 @@ int main(int argc, char *argv[])
 			}
 
 			case 'c': {		//
-				scanf("%s", arg);
+				//scanf("%s", arg);
+				char arg = getchar();
 				char *f;
 				//printf("%s\n", );
 				printf("1\n");
@@ -132,8 +133,6 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				printf("7\n");
-				printf("\nFile `%s` not found\n", f);
-				printf("8\n");
 				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");

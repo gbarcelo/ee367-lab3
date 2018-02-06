@@ -105,8 +105,7 @@ int main(int argc, char *argv[])
 			}
 
 			case 'c': {		//
-				//scanf("%s", arg);
-				char arg = fgetc(stdin);
+				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
 				printf("1\n");
@@ -133,8 +132,8 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				printf("7\n");
-				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
-				else {printf("\nFile `%s` exists\n", f);}
+				if (buf[0]==0) {printf("\nFile `%S` not found\n", f);}
+				else {printf("\nFile `%S` exists\n", f);}
 				printf("\n");
 				printf("8\n");
 				free(f);

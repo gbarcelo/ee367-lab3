@@ -107,7 +107,8 @@ int main(int argc, char *argv[])
 			case 'c': {		//
 				scanf("%s", arg);
 				char *f;
-				printf("%s\n", );("1\n");
+				//printf("%s\n", );
+				("1\n");
 				f = strdup(arg);
 				printf("2\n");
 				// strcpy(f,arg);

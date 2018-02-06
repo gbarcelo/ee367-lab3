@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 				printf("\n");
 				printf("8\n");
 				free(f);
-				printf("9\n", );
+				printf("9\n");
 				break;
 			}
 

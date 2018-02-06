@@ -97,6 +97,35 @@ int main(int argc, char *argv[])
 			}
 
 			case 'p':	{	// "find and cat ./server/<filename>" case
+				scanf("%s", arg);
+				char *f;
+				f = strdup(arg);
+				// strcpy(f,arg);
+				strcat(obuf,arg);
+				printf("Checking server . . .");
+				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				obuf[osize] = 0;
+
+				if (osize < 0) {
+					puts("Send failed");
+					return 1;
+				}
+				puts("about to recv"); // Debug
+				//Receive a reply from the server
+				if( recv(sockfd , buf , 1024 , 0) < 0) {
+					puts("recv failed");
+					breakflag = 1;
+				}
+				puts("recved");
+				char comp[128], temp[25];
+				strcpy(comp, "cat: ");
+				strcat(comp, f);
+				strcat(comp, ": No such file or directory");
+				// printf("\nFinale comp: %s\n", comp);	// Debug
+				if (strstr(buf, comp) != NULL) {printf("\nFile `%s` not found\n", f);}
+				else {printf("\n%s\n", buf);}
+				printf("\n");
+				free(f);
 				break;
 			}
 
@@ -146,7 +175,8 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				puts("List:");
-				puts(buf);
+				printf("%s",buf);
+				printf("\n");
 				break;
 			}
 

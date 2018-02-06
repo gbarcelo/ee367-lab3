@@ -138,7 +138,48 @@ int main(int argc, char *argv[])
 		while( (isize = recv(new_fd , ibuf , 1024 , 0)) > 0 ) {
       //Send the message back to client
 			switch(ibuf[0]){
-				case 'p':		// "find and cat ./server/<filename>" case
+				case 'p':	{	// "find and cat ./server/<filename>" case
+					filename = &ibuf[1];
+					// fsize = recv(new_fd , filename , 128 , 0);
+					// puts(filename);
+					if (!fork()) { // this is the child process
+						close(sockfd); // child doesn't need the listener
+						int pid, n, pipefd[2];
+						char buf[1023]; // main out buffer
+						if (pipe(pipefd) < 0) error("pipe error");
+						if (!fork()) {	// Begin Child Process for sending "find" to buf
+							close(1);
+							close(0);
+							close(2);
+							close(pipefd[0]);		// Close read-side
+							dup2(pipefd[1],1);	// Duplicates file descriptor
+							dup2(pipefd[1],0);
+							dup2(pipefd[1],2);
+							// puts("child reaches execl");
+							// execl(strcat(comm_path,"find"), "find", strcat("./server/",filename),(char *)NULL);
+							execl(strcat(comm_path,"cat"), "cat", strcat("server/",filename), (char *)NULL);
+							error("cat failed");
+						} else {	// Begin Parent Process for reading buf after ls
+							// puts("parant begin");
+							close(pipefd[1]);
+							n = read(pipefd[0], buf, 1024);
+							// puts("pipe read");
+							// printf("%d",n);
+							buf[n] = 0; // 0 = null char
+							printf("%s\n", strcat("server/",filename));
+							// if (n==0) {strcat(buf,"")} // Deal with 0 on client side
+							// close(pipefd[1]);
+						}
+
+						// Stage 1 attempt: end [PARTIAL SUCCESS]
+						// Stage 2 attempt: replace hello world with buf
+						if (send(new_fd, buf, sizeof(buf), 0) == -1)
+							perror("send");
+						// End while loop here? Loop until recv = 0?
+						close(new_fd);
+						exit(0);
+					}
+				}
 					break;
 
 				case 'd':		// download (Send?)

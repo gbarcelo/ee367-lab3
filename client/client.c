@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				printf("7\n");
-				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
+				if (!buf[0]) {printf("\nFile `%s` not found\n", f);}
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
 				printf("8\n");

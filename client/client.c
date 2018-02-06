@@ -132,16 +132,8 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				printf("7\n");
-				if(f==0){
-
-				}
-				printf("7.1\n");
-				if(buf[0]==0){
-
-				}
-				printf("7.2\n");
-				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
-				else {printf("\nFile `%s` exists\n", f);}
+				if (buf[0]==0) {printf("\nFile `%s` not found\n", *f);}
+				else {printf("\nFile `%s` exists\n", *f);}
 				printf("\n");
 				printf("8\n");
 				free(f);

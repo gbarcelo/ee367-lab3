@@ -19,6 +19,9 @@
 
 #define BACKLOG 10	 // how many pending connections queue will hold
 
+#define LOCALPATH "/bin/"
+#define WILIKIPATH "/usr/bin/"
+
 void sigchld_handler(int s)
 {
 	while(waitpid(-1, NULL, WNOHANG) > 0);
@@ -40,7 +43,7 @@ void error(char *s)
   exit(1);
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
 	struct addrinfo hints, *servinfo, *p;
@@ -50,6 +53,14 @@ int main(void)
 	int yes=1;
 	char s[INET6_ADDRSTRLEN];
 	int rv;
+	char comm_path[32];
+
+	if (argc != 2) {
+		argv = NULL;
+		strcpy(comm_path, WILIKIPATH);
+	} else {
+		strcpy(comm_path, LOCALPATH);
+	}
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -106,6 +117,9 @@ int main(void)
 
 	printf("server: waiting for connections...\n");
 
+	char ibuf[1024];		// Using as main in-buffer
+	char *filename;	// inbound filename arguement
+	int isize,fsize; 					// Inbound size
 	while(1) {  // main accept() loop
 		sin_size = sizeof their_addr;
 		new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
@@ -119,21 +133,131 @@ int main(void)
 			s, sizeof s);
 		printf("server: got connection from %s\n", s);
 
+		// Stage 3 -- After client connectoin accepted, wait for
+		// a message from client
+		while( (isize = recv(new_fd , ibuf , 1024 , 0)) > 0 ) {
+      //Send the message back to client
+			switch(ibuf[0]){
+				case 'p':		// "find and cat ./server/<filename>" case
+					break;
+
+				case 'd':		// download (Send?)
+					break;
+
+				case 'c':		// "find ./server/<filename>" case
+					// printf("Case c\n");
+					// puts(ibuf);
+					filename = &ibuf[1];
+					// fsize = recv(new_fd , filename , 128 , 0);
+					// puts(filename);
+					if (!fork()) { // this is the child process
+						close(sockfd); // child doesn't need the listener
+						int pid, n, pipefd[2];
+						char buf[1023]; // main out buffer
+						if (pipe(pipefd) < 0) error("pipe error");
+						if (!fork()) {	// Begin Child Process for sending "find" to buf
+							close(1);
+							close(0);
+							close(2);
+							close(pipefd[0]);		// Close read-side
+							dup2(pipefd[1],1);	// Duplicates file descriptor
+							dup2(pipefd[1],0);
+							dup2(pipefd[1],2);
+							// puts("child reaches execl");
+							// execl(strcat(comm_path,"find"), "find", strcat("./server/",filename),(char *)NULL);
+							execl(WILIKIPATH"find", "find", "./server", "-name", filename, (char *)NULL);
+							error("find failed");
+						} else {	// Begin Parent Process for reading buf after ls
+							// puts("parant begin");
+							close(pipefd[1]);
+							n = read(pipefd[0], buf, 1024);
+							// puts("pipe read");
+							// printf("%d",n);
+							buf[n] = 0; // 0 = null char
+							// printf("%s\n", filename);
+							// if (n==0) {strcat(buf,"")} // Deal with 0 on client side
+							// close(pipefd[1]);
+						}
+
+						// Stage 1 attempt: end [PARTIAL SUCCESS]
+						// Stage 2 attempt: replace hello world with buf
+						if (send(new_fd, buf, sizeof(buf), 0) == -1)
+							perror("send");
+						// End while loop here? Loop until recv = 0?
+						close(new_fd);
+						exit(0);
+					}
+					break;
+
+				case 'l':		// "ls" case
+					//////////////////////////////////////////////////////////////
+					if (!fork()) { // this is the child process
+						close(sockfd); // child doesn't need the listener
+						// Stage 1 attempt: execl with pipe
+						int pid, n, pipefd[2];
+						char buf[1023]; // main out buffer
+						if (pipe(pipefd) < 0) error("pipe error");
+						// Insert "if (recv L)" here?
+						if (!fork()) {	// Begin Child Process for sending "ls" to buf
+							// close(1);
+
+							close(1);
+							close(0);
+							close(2);
+							close(pipefd[0]);		// Close read-side
+							dup2(pipefd[1],1);	// Duplicates file descriptor
+							dup2(pipefd[1],0);
+							dup2(pipefd[1],2);
+							execl(strcat(comm_path,"ls"), "ls", (char *)NULL);
+							error("ls failed");
+						} else {	// Begin Parent Process for reading buf after ls
+							close(pipefd[1]);
+							n = read(pipefd[0], buf, 1024);
+							buf[n] = 0; // 0 = null char
+							// close(pipefd[1]);
+						}
+
+						// Stage 1 attempt: end [PARTIAL SUCCESS]
+						// Stage 2 attempt: replace hello world with buf
+						if (send(new_fd, buf, sizeof(buf), 0) == -1)
+							perror("send");
+						// End while loop here? Loop until recv = 0?
+						close(new_fd);
+						exit(0);
+					}
+					/////////////////////////////////////////////////////////////
+					break;
+
+				default:		// Echo code to print echo if first letter is not a case
+					isize = 4;
+					strcpy(ibuf,"Echo");
+					ibuf[isize]=0;
+					if (send(new_fd, ibuf, sizeof(ibuf), 0) == -1)
+						perror("send");
+					ibuf[0]=0;
+			}
+
+
+			// Place arguement reading here
+
+    }
+
 		if (!fork()) { // this is the child process
 			close(sockfd); // child doesn't need the listener
 			// Stage 1 attempt: execl with pipe
 			int pid, n, pipefd[2];
-			char buf[255];
+			char buf[1023]; // main out buffer
 			if (pipe(pipefd) < 0) error("pipe error");
+			// Insert "if (recv L)" here?
 			if (!fork()) {	// Begin Child Process for sending "ls" to buf
 				close(pipefd[0]);		// Close read-side
 				dup2(pipefd[1],1);	// Duplicates file descriptor
-				execl("/usr/bin/ls", "ls", (char *)NULL);
+				execl(strcat(comm_path,"ls"), "ls", (char *)NULL);
 				error("ls failed");
 			} else {	// Begin Parent Process for reading buf after ls
 				close(pipefd[1]);
-				n = read(pipefd[0], buf, 250);
-				buf[n] = "\0";
+				n = read(pipefd[0], buf, 1024);
+				buf[n] = 0; // 0 = null char
 				// close(pipefd[1]);
 			}
 
@@ -141,6 +265,7 @@ int main(void)
 			// Stage 2 attempt: replace hello world with buf
 			if (send(new_fd, buf, sizeof(buf), 0) == -1)
 				perror("send");
+			// End while loop here? Loop until recv = 0?
 			close(new_fd);
 			exit(0);
 		}

@@ -78,14 +78,125 @@ int main(int argc, char *argv[])
 
 	freeaddrinfo(servinfo); // all done with this structure
 
-	if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
-	    perror("recv");
-	    exit(1);
+	// Stage 3 -- After server accepts, send and recieve until Q
+	char obuf[1024], arg[128];
+	int osize;
+	int breakflag;
+
+	while (obuf[0]!='q') {
+		printf("Command (type `h` for help): ");
+		// printf(">> ");
+    scanf("%s", obuf);
+
+		breakflag = 0;
+		// if (obuf[0]=='q') {break;} // Expand this into switch
+		switch(obuf[0]){
+			case 'q': {
+				breakflag = 1;
+				break;
+			}
+
+			case 'p':	{	// "find and cat ./server/<filename>" case
+				break;
+			}
+
+			case 'd':	{	// download (Send?)
+				break;
+			}
+
+			case 'c': {		//
+				scanf("%s", arg);
+				char *f;
+				f = strdup(arg);
+				// strcpy(f,arg);
+				strcat(obuf,arg);
+				printf("Checking server . . .");
+				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				obuf[osize] = 0;
+
+				if (osize < 0) {
+					puts("Send failed");
+					return 1;
+				}
+
+				//Receive a reply from the server
+				if( recv(sockfd , buf , 1024 , 0) < 0) {
+					puts("recv failed");
+					breakflag = 1;
+				}
+				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
+				else {printf("\nFile `%s` exists\n", f);}
+				printf("\n");
+				free(f);
+				break;
+			}
+
+			case 'l':{		// Dropdown (for now)
+				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				obuf[osize] = 0;
+
+		    if (osize < 0) {
+		      puts("Send failed");
+		      return 1;
+		    }
+
+		    //Receive a reply from the server
+		    if( recv(sockfd , buf , 1024 , 0) < 0) {
+		      puts("recv failed");
+					breakflag = 1;
+				}
+				puts("List:");
+				puts(buf);
+				break;
+			}
+
+			case 'h': {
+				puts("Commands:");
+				puts("l : List");
+				puts("c : Check <filename>");
+				puts("p : Display <filename>");
+				puts("d : Download <filename>");
+				puts("q : Quit");
+				puts("h : Help");
+				puts("");
+				break;
+			}
+
+			default: {
+				puts("Error: Command not found.\n");
+				// osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				// obuf[osize] = 0;
+        //
+				// if (osize < 0) {
+				// 	puts("Send failed");
+				// 	return 1;
+				// }
+        //
+				// //Receive a reply from the server
+				// if( recv(sockfd , buf , 1024 , 0) < 0) {
+				// 	puts("recv failed");
+				// 	breakflag = 1;
+				// }
+			}
+		}
+		if (breakflag) {break;}
+		//Send some data
+
+    //send/recv used to be here
+
+    // puts("Server reply :\n");
+    // puts(buf);
 	}
 
-	buf[numbytes] = '\0';
+	// Commented out for testing Stage 3 Echo code
+	// if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+	//     perror("recv");
+	//     exit(1);
+	// }
 
-	printf("client: received '%s'\n",buf);
+	// buf[numbytes] = '\0';
+
+	// printf("client: received '%s'\n",buf);
 
 	close(sockfd);
 

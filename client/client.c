@@ -101,6 +101,8 @@ int main(int argc, char *argv[])
 			printf("That function is not yet added\n");
 		}else if(test == 'p'){
 			printf("That function is not yet added\n");
+		}else if(test == 'd'){
+			printf("That function is not yet added\n");
 		}else{
 			printf("Command (type ‘h’ for help):\n");
 		}

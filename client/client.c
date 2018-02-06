@@ -108,36 +108,26 @@ int main(int argc, char *argv[])
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
-				printf("1\n");
 				f = strdup(arg);
-				printf("2\n");
 				// strcpy(f,arg);
 				strcat(obuf,arg);
-				printf("3\n");
 				printf("Checking server . . .");
 				osize = send(sockfd, obuf ,sizeof(obuf), 0);
-				printf("4\n");
 				obuf[osize] = 0;
-				printf("5\n");
 
 				if (osize < 0) {
 					puts("Send failed");
 					return 1;
 				}
-
-				printf("6\n");
 				//Receive a reply from the server
 				if( recv(sockfd , buf , 1024 , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 				}
-				printf("7\n");
-				if (buf[0]==0) {printf("\nFile `%S` not found\n", f);}
-				else {printf("\nFile `%S` exists\n", f);}
+				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
+				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
-				printf("8\n");
 				free(f);
-				printf("9\n");
 				break;
 			}
 

@@ -107,30 +107,30 @@ int main(int argc, char *argv[])
 			case 'c': {		//
 				scanf("%s", arg);
 				char *f;
-				print("1\n");
+				printf("%s\n", );("1\n");
 				f = strdup(arg);
-				print("2\n");
+				printf("2\n");
 				// strcpy(f,arg);
 				strcat(obuf,arg);
-				print("3\n");
+				printf("3\n");
 				printf("Checking server . . .");
 				osize = send(sockfd, obuf ,sizeof(obuf), 0);
-				print("4\n");
+				printf("4\n");
 				obuf[osize] = 0;
-				print("5\n");
+				printf("5\n");
 
 				if (osize < 0) {
 					puts("Send failed");
 					return 1;
 				}
 
-				print("6\n");
+				printf("6\n");
 				//Receive a reply from the server
 				if( recv(sockfd , buf , 1024 , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 				}
-				print("7\n");
+				printf("7\n");
 				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");

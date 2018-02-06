@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
-				("1\n");
+				printf("1\n");
 				f = strdup(arg);
 				printf("2\n");
 				// strcpy(f,arg);
@@ -135,7 +135,9 @@ int main(int argc, char *argv[])
 				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
+				printf("8\n");
 				free(f);
+				printf("9\n", );
 				break;
 			}
 

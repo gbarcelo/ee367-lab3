@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
 			case 'c': {		//
 				testflag = 1;
-				scanf("%s", arg);
+				scanf("%s", &arg);
 				char *f;
 				//printf("%s\n", );
 				f = strdup(arg);
@@ -125,10 +125,10 @@ int main(int argc, char *argv[])
 					puts("recv failed");
 					breakflag = 1;
 				}
-				if (buf[0]==0) {printf("\nFile `%c` not found\n", f);}
-				else {printf("\nFile `%c` exists\n", f);}
+				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
+				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
-				//free(f);
+				free(f);
 				break;
 			}
 
@@ -178,9 +178,6 @@ int main(int argc, char *argv[])
 				// 	puts("recv failed");
 				// 	breakflag = 1;
 				// }
-			}
-			if(testflag == 1){
-				printf("1\n");
 			}
 		}
 		if (breakflag) {break;}

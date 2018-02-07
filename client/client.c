@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 	char obuf[1024], arg[128];
 	int osize;
 	int breakflag;
-
+	int testflag = 0;
 	while (obuf[0]!='q') {
 		printf("Command (type `h` for help): ");
 		// printf(">> ");
@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
 			}
 
 			case 'c': {		//
+				testflag = 1;
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
@@ -177,6 +178,9 @@ int main(int argc, char *argv[])
 				// 	puts("recv failed");
 				// 	breakflag = 1;
 				// }
+			}
+			if(testflag == 1){
+				printf("1\n");
 			}
 		}
 		if (breakflag) {break;}

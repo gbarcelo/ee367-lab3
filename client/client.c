@@ -110,6 +110,9 @@ int main(int argc, char *argv[])
 				char *f;
 				//printf("%s\n", );
 				f = strdup(arg);
+				if(arg == NULL){
+					printf("ITS NULL\n");
+				}
 				// strcpy(f,arg);
 				strcat(obuf,arg);
 				printf("Checking server . . .");

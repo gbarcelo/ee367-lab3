@@ -107,12 +107,12 @@ int main(int argc, char *argv[])
 			case 'c': {		//
 				testflag = 1;
 				scanf("%s", arg);
-				char *f;
+				char f[128];
 				//printf("%s\n", );
-				//f = strdup(arg);
+				f = strdup(arg);
 
-				f = malloc(sizeof(char*) * argc);
-				for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
+				//f = malloc(sizeof(char*) * argc);
+				//for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
 
 				// strcpy(f,arg);
 				strcat(obuf,arg);

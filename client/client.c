@@ -107,10 +107,11 @@ int main(int argc, char *argv[])
 			case 'c': {		//
 				testflag = 1;
 				scanf("%s", arg);
-				char **f;
+				char *f;
 				//printf("%s\n", );
-				f = strdup(arg);
-
+				char bufferf[30];
+				strcpy(bufferf,arg);
+				f = strdup(bufferf);
 				//f = malloc(sizeof(char*) * argc);
 				//for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
 

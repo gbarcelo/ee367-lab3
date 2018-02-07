@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
-				char bufferf[30];
+				char bufferf[128];
 				strcpy(bufferf,arg);
 				f = strdup(bufferf);
 				//f = malloc(sizeof(char*) * argc);

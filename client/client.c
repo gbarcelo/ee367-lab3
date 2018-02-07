@@ -110,19 +110,22 @@ int main(int argc, char *argv[])
 					puts("Send failed");
 					return 1;
 				}
-				puts("about to recv"); // Debug
+				// puts("about to recv"); // Debug
 				//Receive a reply from the server
 				if( recv(sockfd , buf , 1024 , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 				}
-				puts("recved");
+				// puts("recved");
 				char comp[128], temp[25];
-				strcpy(comp, "cat: ");
+				// cat: server/file1.txtt: No such file or directory
+				strcpy(comp, "cat: server/");
 				strcat(comp, f);
-				strcat(comp, ": No such file or directory");
+				// strcat(comp, ": No such file or directory");
 				// printf("\nFinale comp: %s\n", comp);	// Debug
+				// printf("buf: %s\n", buf); // Debug
 				if (strstr(buf, comp) != NULL) {printf("\nFile `%s` not found\n", f);}
+				else if (buf[0]==0) {printf("Server pipe error\n");}
 				else {printf("\n%s\n", buf);}
 				printf("\n");
 				free(f);

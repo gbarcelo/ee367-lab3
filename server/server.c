@@ -137,6 +137,7 @@ int main(int argc, char *argv[])
 		// a message from client
 		while( (isize = recv(new_fd , ibuf , 1024 , 0)) > 0 ) {
       //Send the message back to client
+			printf("%s\n", ibuf);
 			switch(ibuf[0]){
 				case 'p':	{	// "find and cat ./server/<filename>" case
 					filename = &ibuf[1];
@@ -146,6 +147,7 @@ int main(int argc, char *argv[])
 						close(sockfd); // child doesn't need the listener
 						int pid, n, pipefd[2];
 						char buf[1023]; // main out buffer
+						// char *buf = NULL;
 						if (pipe(pipefd) < 0) error("pipe error");
 						if (!fork()) {	// Begin Child Process for sending "find" to buf
 							close(1);
@@ -156,8 +158,10 @@ int main(int argc, char *argv[])
 							dup2(pipefd[1],0);
 							dup2(pipefd[1],2);
 							// puts("child reaches execl");
-							// execl(strcat(comm_path,"find"), "find", strcat("./server/",filename),(char *)NULL);
-							execl(strcat(comm_path,"cat"), "cat", strcat("server/",filename), (char *)NULL);
+							char temp[] = "server/";
+							// filename = strcat(temp,filename);
+							// execl(strcat(comm_path,"cat"), "cat", strcat("server/",filename), (char *)NULL);
+							execl("/bin/cat", "cat", strcat(temp,filename), (char *)NULL);
 							error("cat failed");
 						} else {	// Begin Parent Process for reading buf after ls
 							// puts("parant begin");
@@ -166,7 +170,7 @@ int main(int argc, char *argv[])
 							// puts("pipe read");
 							// printf("%d",n);
 							buf[n] = 0; // 0 = null char
-							printf("%s\n", strcat("server/",filename));
+							// printf("%s\n", strcat("server/",filename));
 							// if (n==0) {strcat(buf,"")} // Deal with 0 on client side
 							// close(pipefd[1]);
 						}

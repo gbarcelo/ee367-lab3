@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
 				if (buf[0]==0) {printf("\nFile `%c` not found\n", f);}
 				else {printf("\nFile `%c` exists\n", f);}
 				printf("\n");
-				free(f);
+				//free(f);
 				break;
 			}
 

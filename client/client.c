@@ -109,10 +109,9 @@ int main(int argc, char *argv[])
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
-				f = strdup(arg);
-				if(arg == NULL){
-					printf("ITS NULL\n");
-				}
+				//f = strdup(arg);
+				f = malloc(sizeof(char*) * argc);
+				for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
 				// strcpy(f,arg);
 				strcat(obuf,arg);
 				printf("Checking server . . .");

@@ -110,8 +110,10 @@ int main(int argc, char *argv[])
 				char *f;
 				//printf("%s\n", );
 				//f = strdup(arg);
+
 				f = malloc(sizeof(char*) * argc);
 				for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
+
 				// strcpy(f,arg);
 				strcat(obuf,arg);
 				printf("Checking server . . .");
@@ -127,8 +129,8 @@ int main(int argc, char *argv[])
 					puts("recv failed");
 					breakflag = 1;
 				}
-				if (buf[0]==0) {printf("\nFile `%c` not found\n", f);}
-				else {printf("\nFile `%c` exists\n", f);}
+				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
+				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
 				free(f);
 				printf("Test\n");

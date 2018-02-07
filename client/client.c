@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
 
 			case 'c': {		//
 				testflag = 1;
-				scanf("%s", &arg);
+				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
 				f = strdup(arg);
@@ -129,6 +129,7 @@ int main(int argc, char *argv[])
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
 				free(f);
+				printf("Test\n");
 				break;
 			}
 

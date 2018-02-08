@@ -109,10 +109,10 @@ int main(int argc, char *argv[])
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
-				memset(f, '\0',sizeof(f));
+				//memset(f, '\0',sizeof(f));
 				char bufferf[128];
-				strcpy(bufferf,arg);
-				f = strdup(bufferf);
+				bufferf = strdup(arg);
+				f = strtok(bufferf, );
 				//f = malloc(sizeof(char*) * argc);
 				//for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
 
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
 				printf("2\n");
-				free(f);
+				free(bufferf);
 				printf("3\n");
 				break;
 			}

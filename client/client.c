@@ -130,11 +130,13 @@ int main(int argc, char *argv[])
 					puts("recv failed");
 					breakflag = 1;
 				}
+				printf("1\n");
 				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
 				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
+				printf("2\n");
 				free(f);
-				printf("Test\n");
+				printf("3\n");
 				break;
 			}
 

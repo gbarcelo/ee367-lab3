@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
 				char bufferf[128];
 				strcpy(buffera,arg);
 				strcpy(bufferf,buffera);
-				f=strdup(bufferf);
+				f=*strdup(bufferf);
 				//f = malloc(sizeof(char*) * argc);
 				//for (size_t i = 0; i < argc; ++ i) f[i] = strdup(argv[i]);
 
@@ -134,8 +134,8 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 				}
 				printf("1\n");
-				if (buf[0]==0) {printf("\nFile `%s` not found\n", *f);}
-				else {printf("\nFile `%s` exists\n", *f);}
+				if (buf[0]==0) {printf("\nFile `%s` not found\n", f);}
+				else {printf("\nFile `%s` exists\n", f);}
 				printf("\n");
 				printf("2\n");
 				free(f);

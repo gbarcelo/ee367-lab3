@@ -132,6 +132,7 @@ int main(int argc, char *argv[])
       //Send the message back to client
 			printf("%s\n", ibuf);
 			switch(ibuf[0]){
+				case 'd':		// download (Send?)
 				case 'p':	{	// "find and cat ./server/<filename>" case
 					filename = &ibuf[1];
 					char temp[] = "server/";
@@ -199,10 +200,8 @@ int main(int argc, char *argv[])
 					break;
 				}
 
-				case 'd':		// download (Send?)
-					break;
 
-				case 'c':		// "find ./server/<filename>" case
+				case 'c':	{	// "find ./server/<filename>" case
 					// printf("Case c\n");
 					// puts(ibuf);
 					filename = &ibuf[1];
@@ -246,6 +245,7 @@ int main(int argc, char *argv[])
 						exit(0);
 					}
 					break;
+				}
 
 				case 'l':	{	// "ls" case
 					char comm_path[32];

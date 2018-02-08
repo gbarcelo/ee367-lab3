@@ -28,4 +28,5 @@ local: run-client-local clean
 
 clean:
 	-rm ./client/a.out
+	-rm ./client/*.txt
 	-rm ./server/a.out

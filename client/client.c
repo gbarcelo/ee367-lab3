@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 	int isQuit = 0;
 
 	while (isQuit==0) {
+		int isDl = 0;
 		printf("Command (type `h` for help): ");
 		// printf(">> ");
     scanf("%s", obuf);
@@ -98,6 +99,11 @@ int main(int argc, char *argv[])
 				break;
 			}
 
+			case 'd':		// download (Send?)
+				isDl = 1;
+				FILE *fp;
+				char temp[] = "client/";
+
 			case 'p':	{	// "find and cat ./server/<filename>" case
 				scanf("%s", arg);
 				char *fname, *vbuf;
@@ -105,10 +111,31 @@ int main(int argc, char *argv[])
 				fname = strdup(arg);
 				// strcpy(f,arg);
 				strcat(obuf,arg);
+
+				/****Start**********Download Only******************/
+				if (isDl){
+					fp = fopen(strcat(temp,fname),"rb");
+					if (fp) {
+						printf("There is currently a file of the same name. Overwrite it? (y/n): ");
+						scanf("%s", arg);
+						if (arg[0] == 'n' || arg[0] == 'N') {
+							printf("Action cancelled.\n\n");
+							// breakflag = 1;
+							break;
+						} else if (arg[0] != 'y' && arg[0] != 'Y') {
+							printf("Invalid selection, aborting.\n\n");
+							break;
+						}
+					}
+				}
+				/****End************Download Only******************/
+
 				printf("Checking server . . .\n");
 				osize = send(sockfd, obuf ,sizeof(obuf), 0);
 				if (osize < 0) {perror("send failed"); return 1;}
 				obuf[osize] = 0;
+
+
 
 				//Receive a reply from the server
 				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
@@ -121,11 +148,6 @@ int main(int argc, char *argv[])
 				// in: Recieve a fsize IF NULL, FILE DOES NOT EXIST; LOOPBACK HERE
 				if (buf[0] == 0) {printf("File `%s` not found\n\n", fname); break;}
 				else {
-					// if( recv(sockfd , buf , 1024 , 0) < 0) {
-					// 	puts("recv failed");
-					// 	breakflag = 1;
-					// 	break;
-					// }
 					fsize = strtol(buf, NULL, 10);
 				}
 				puts("in success"); // --debug
@@ -153,9 +175,18 @@ int main(int argc, char *argv[])
 							vbuf[fsize] = 0;
 						}
 						printf("recv size: %ld\n", fsize);	// --debug
-						int printed;
-						if ((printed = printf("%s\n", vbuf)-1) != fsize) { printf("print failed");}
-						puts("end of vbuf");
+						if (isDl == 0) {
+							int printed;
+							if ((printed = printf("%s\n", vbuf)-1) != fsize) { printf("print failed");}
+							puts("end of vbuf"); // --debug
+						} else if (isDl == 1) {
+							/****Start**********Download Only******************/
+							fp = fopen(temp, "wb");
+							fwrite(vbuf, 1, fsize, fp);
+							fclose(fp);
+							printf("File write complete\n\n");
+							/****End************Download Only******************/
+						}
 						memset(vbuf,0,fsize-1);
 						free(vbuf);
 					}
@@ -166,9 +197,6 @@ int main(int argc, char *argv[])
 				break;
 			}
 
-			case 'd':	{	// download (Send?)
-				break;
-			}
 
 			case 'c': {		//
 				scanf("%s", arg);

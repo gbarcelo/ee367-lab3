@@ -1,4 +1,4 @@
-all: bin/client367 bin/server clean
+all: bin/client367 bin/server
 
 bin/server: src/server.c
 	-gcc src/server.c -o bin/server
@@ -9,9 +9,12 @@ run-server: bin/server
 run-server-local: bin/server
 	./bin/server loc
 
-server: run-server clean
+server: run-server
 
-serverl: run-server-local clean
+serverbg: bin/client367 bin/server
+	./bin/server &
+
+serverl: run-server-local
 
 bin/client367: src/client.c
 	-gcc src/client.c -o bin/client367
@@ -22,9 +25,9 @@ run-client-wiliki: bin/client367
 run-client-local: bin/client367
 	./bin/client367 127.0.0.1
 
-client: run-client-wiliki clean
+client: run-client-wiliki
 
-local: run-client-local clean
+local: run-client-local
 
 clean:
 	-rm ./bin/client367

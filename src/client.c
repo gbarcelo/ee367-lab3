@@ -82,6 +82,7 @@ int main(int argc, char *argv[])
 	char obuf[MAXDATASIZE], arg[128];
 	int osize;
 	int breakflag;
+	char ovr[16];
 	int isQuit = 0;
 
 	while (isQuit==0) {
@@ -102,7 +103,7 @@ int main(int argc, char *argv[])
 			case 'd':		// download (Send?)
 				isDl = 1;
 				FILE *fp;
-				char temp[] = "client/";
+				char temp[32] = "client/";
 
 			case 'p':	{	// "find and cat ./server/<filename>" case
 				scanf("%s", arg);
@@ -117,12 +118,13 @@ int main(int argc, char *argv[])
 					fp = fopen(strcat(temp,fname),"rb");
 					if (fp) {
 						printf("There is currently a file of the same name. Overwrite it? (y/n): ");
-						scanf("%s", arg);
-						if (arg[0] == 'n' || arg[0] == 'N') {
+						scanf("%s", ovr);
+						ovr[1] = 0;
+						if (ovr[0] == 'n' || ovr[0] == 'N') {
 							printf("Action cancelled.\n\n");
 							// breakflag = 1;
 							break;
-						} else if (arg[0] != 'y' && arg[0] != 'Y') {
+						} else if (ovr[0] != 'y' && ovr[0] != 'Y') {
 							printf("Invalid selection, aborting.\n\n");
 							break;
 						}
@@ -135,30 +137,26 @@ int main(int argc, char *argv[])
 				if (osize < 0) {perror("send failed"); return 1;}
 				obuf[osize] = 0;
 
-
-
 				//Receive a reply from the server
 				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 					break;
 				}
-				// puts("in fsize or null"); // --debug
-				// puts(buf);	// --debug
+
 				// in: Recieve a fsize IF NULL, FILE DOES NOT EXIST; LOOPBACK HERE
 				if (buf[0] == 0) {printf("File `%s` not found\n\n", fname); break;}
 				else {
 					fsize = strtol(buf, NULL, 10);
 				}
-				puts("in success"); // --debug
+				// puts("in success"); // --debug
 
 				// out: Confirm fsize
 				sprintf(obuf, "%ld", fsize);
 				osize = send(sockfd, obuf ,MAXDATASIZE, 0);
 				if (osize < 0) {perror("send failed"); return 1;}
 				obuf[osize] = 0;
-				puts("out success"); // --debug
-
+				// puts("out success"); // --debug
 				// in: if NULL GOTO: Recieve a fsize(loop), else MALLOC and RECV buffer
 				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
 					puts("recv failed");
@@ -166,7 +164,7 @@ int main(int argc, char *argv[])
 					break;
 				}
 				if (buf[0] != 0) {
-					vbuf = malloc(fsize);
+					vbuf = calloc(fsize,sizeof(char*));
 					if (vbuf) {
 						if( (fsize = recv(sockfd , vbuf , fsize , 0)) < 0) {
 							puts("recv failed");
@@ -174,11 +172,10 @@ int main(int argc, char *argv[])
 							break;
 							vbuf[fsize] = 0;
 						}
-						printf("recv size: %ld\n", fsize);	// --debug
 						if (isDl == 0) {
 							int printed;
 							if ((printed = printf("%s\n", vbuf)-1) != fsize) { printf("print failed");}
-							puts("end of vbuf"); // --debug
+							// puts("end of vbuf"); // --debug
 						} else if (isDl == 1) {
 							/****Start**********Download Only******************/
 							fp = fopen(temp, "wb");

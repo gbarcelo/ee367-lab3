@@ -130,7 +130,7 @@ int main(int argc, char *argv[])
 		// a message from client
 		while( (isize = recv(new_fd , ibuf , 1024 , 0)) > 0 ) {
       //Send the message back to client
-			printf("%s\n", ibuf);
+			// printf("%s\n", ibuf); // --debug
 			switch(ibuf[0]){
 				case 'd':		// download (Send?)
 				case 'p':	{	// "find and cat ./server/<filename>" case
@@ -143,33 +143,30 @@ int main(int argc, char *argv[])
 					FILE *fp = fopen(strcat(temp,filename),"rb");	// NULL if no file
 
 					if (fp) {
-						puts("fp yes"); // --debug
+						// puts("fp yes"); // --debug
 						fseek(fp, 0, SEEK_END);
 						fsize = ftell(fp);
 						sprintf(buf, "%ld", fsize);
-						printf("fsize: %ld\n", fsize);	// --debug
+						// printf("fsize: %ld\n", fsize);	// --debug
 						fseek(fp, 0, SEEK_SET);  //same as rewind(f);
-						vbuf = malloc(fsize);
-						// printf("vbuf after malloc:%ld\n", sizeof(vbuf)/sizeof(vbuf[0])); // --debug
-						// printf("sizeof(vbuf):%ld\n", sizeof(vbuf)); // --debug
+						vbuf = calloc(fsize,sizeof(char*));
 						if (vbuf) {
-							// printf("vbuf before fread:%ld\n", sizeof(vbuf)/sizeof(vbuf[0])); // --debug
 							int chars_read = fread(vbuf, 1, fsize, fp);
 							vbuf[fsize] = 0;
-							printf("vbuf holds %d chars\n", chars_read); // --debug
+							// printf("vbuf holds %d chars\n", chars_read); // --debug
 						}
 						fclose(fp);
 					} else {
-						puts("fp no"); // --debug
+						// puts("fp no"); // --debug
 						buf[0] = 0;
 					}
-					puts("fileread success"); // --debug
+					// puts("fileread success"); // --debug
 
 					// out: Send fsize LOOPBACK HERE
 
 					if (send(new_fd, buf, 1024, 0) == -1)
 						perror("send");
-					puts("out success"); // --debug
+					// puts("out success"); // --debug
 
 					// in: Confirm fsize IF fsize ==, SEND vbuf, else send null and LOOPBACK
 					isize = recv(new_fd , ibuf , 1024 , 0);
@@ -185,7 +182,7 @@ int main(int argc, char *argv[])
 						if (vbuf) {
 							if ((fsize = send(new_fd, vbuf, fsize, 0)) == -1)
 								perror("send vbuf");
-							printf("vbuf sent:%ld\n", fsize); // --debug
+							// printf("vbuf sent:%ld\n", fsize); // --debug
 						}
 					} else {
 						buf[0] = 0;
@@ -194,7 +191,7 @@ int main(int argc, char *argv[])
 							//LOOPBACK HERE
 					}
 					memset(buf,0,1024);
-					puts("compare success"); // --debug
+					// puts("compare success"); // --debug
 
 					if (vbuf) {memset(vbuf,0,fsize); free(vbuf);}
 					break;
@@ -259,7 +256,7 @@ int main(int argc, char *argv[])
 					char binpath[32] = "";
 					strcat(binpath,comm_path);
 					strcat(binpath, "ls");
-					puts(binpath); // --debug
+					// puts(binpath); // --debug
 					//////////////////////////////////////////////////////////////
 					if (!fork()) { // this is the child process
 						close(sockfd); // child doesn't need the listener
@@ -286,7 +283,7 @@ int main(int argc, char *argv[])
 							memset(buf, 0, 1024); // --debug
 							n = read(pipefd[0], buf, 1024);
 							buf[n] = 0; // 0 = null char
-							puts(buf); // --debug
+							// puts(buf); // --debug
 							// close(pipefd[1]);
 						}
 

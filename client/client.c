@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 				//memset(f, '\0',sizeof(f));
 				char buffera[128];
 				char bufferf[128];
-				buffera=arg;
+				strcpy(buffera,arg);
 				strcpy(bufferf,buffera);
 				f=strdup(bufferf);
 				//f = malloc(sizeof(char*) * argc);

@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 			case 'c': {		//
 				testflag = 1;
 				scanf("%s", arg);
-				char f;
+				char f[128];
 				//printf("%s\n", );
 				//memset(f, '\0',sizeof(f));
 				char buffera[128];

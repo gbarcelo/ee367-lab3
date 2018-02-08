@@ -11,10 +11,7 @@ run-server-local: bin/server
 
 server: run-server
 
-serverbg: bin/client367 bin/server
-	./bin/server &
-
-serverl: run-server-local
+server-l: run-server-local
 
 bin/client367: src/client.c
 	-gcc src/client.c -o bin/client367

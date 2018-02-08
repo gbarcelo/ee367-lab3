@@ -300,8 +300,11 @@ int main(int argc, char *argv[])
 					}
 					break;
 
-				case 'l':		// "ls" case
-					puts(strcat(comm_path,"ls")); // --debug
+				case 'l':	{	// "ls" case
+					char binpath[32] = "";
+					strcat(binpath,comm_path);
+					strcat(binpath, "ls");
+					puts(binpath); // --debug
 					//////////////////////////////////////////////////////////////
 					if (!fork()) { // this is the child process
 						close(sockfd); // child doesn't need the listener
@@ -321,7 +324,7 @@ int main(int argc, char *argv[])
 							dup2(pipefd[1],1);	// Duplicates file descriptor
 							dup2(pipefd[1],0);
 							dup2(pipefd[1],2);
-							execl(strcat(comm_path,"ls"), "ls", "server", (char *)NULL);
+							execl(binpath, "ls", "server", (char *)NULL);
 							error("execl ls failed");
 						} else {	// Begin Parent Process for reading buf after ls
 							close(pipefd[1]);
@@ -342,6 +345,7 @@ int main(int argc, char *argv[])
 					}
 					/////////////////////////////////////////////////////////////
 					break;
+				}
 
 				default:		// Echo code to print echo if first letter is not a case
 					isize = 4;

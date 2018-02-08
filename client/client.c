@@ -158,7 +158,8 @@ int main(int argc, char *argv[])
 							vbuf[fsize] = 0;
 						}
 						printf("recv size: %ld\n", fsize);	// --debug
-						printf("%s\n", vbuf);
+						int printed;
+						if ((printed = printf("%s\n", vbuf)-1) != fsize) { printf("print failed");}
 						puts("end of vbuf");
 						memset(vbuf,0,fsize);
 						free(vbuf);

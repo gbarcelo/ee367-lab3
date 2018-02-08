@@ -1,32 +1,32 @@
-all: client/a.out server/a.out clean
+all: bin/client367 bin/server clean
 
-server/a.out: server/server.c
-	-gcc server/server.c -o server/a.out
+bin/server: src/server.c
+	-gcc src/server.c -o bin/server
 
-run-server: server/a.out
-	./server/a.out
+run-server: bin/server
+	./bin/server
 
-run-server-local: server/a.out
-	./server/a.out loc
+run-server-local: bin/server
+	./bin/server loc
 
 server: run-server clean
 
 serverl: run-server-local clean
 
-client/a.out: client/client.c
-	-gcc client/client.c -o client/a.out
+bin/client367: src/client.c
+	-gcc src/client.c -o bin/client367
 
-run-client-wiliki: client/a.out
-	./client/a.out wiliki.eng.hawaii.edu
+run-client-wiliki: bin/client367
+	./bin/client367 wiliki.eng.hawaii.edu
 
-run-client-local: client/a.out
-	./client/a.out 127.0.0.1
+run-client-local: bin/client367
+	./bin/client367 127.0.0.1
 
 client: run-client-wiliki clean
 
 local: run-client-local clean
 
 clean:
-	-rm ./client/a.out
+	-rm ./bin/client367
 	-rm ./client/*.txt
-	-rm ./server/a.out
+	-rm ./bin/server

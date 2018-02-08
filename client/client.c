@@ -109,6 +109,7 @@ int main(int argc, char *argv[])
 				scanf("%s", arg);
 				char *f;
 				//printf("%s\n", );
+				memset(f, '\0',sizeof(f));
 				char bufferf[128];
 				strcpy(bufferf,arg);
 				f = strdup(bufferf);

@@ -16,7 +16,7 @@
 
 #define PORT "3601" // the port client will be connecting to (OLD:3490)
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MAXDATASIZE 1024 // max number of bytes we can get at once
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)
@@ -115,19 +115,41 @@ int main(int argc, char *argv[])
 				if( recv(sockfd , buf , 1024 , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
+					break;
 				}
-				// puts("recved");
-				char comp[128], temp[25];
-				// cat: server/file1.txtt: No such file or directory
-				strcpy(comp, "cat: server/");
-				strcat(comp, f);
-				// strcat(comp, ": No such file or directory");
-				// printf("\nFinale comp: %s\n", comp);	// Debug
-				// printf("buf: %s\n", buf); // Debug
-				if (strstr(buf, comp) != NULL) {printf("\nFile `%s` not found\n", f);}
-				else if (buf[0]==0) {printf("Server pipe error\n");}
-				else {printf("\n%s\n", buf);}
-				printf("\n");
+
+				// in: Recieve a fsize
+				if (buf[0] == NULL) {printf("\nFile `%s` not found\n", f); break;}
+				else (buf)
+
+				// out: Confirm fsize
+
+				// in: if NULL GOTO: Recieve a fsize(loop), else MALLOC and RECV buffer
+
+
+				/////// end of experiment implementtion; everything //////////////
+				/////// below should be commented/deleted ////////////////////////
+				int blen = 1 ;
+
+				// ioctl(sockfd, FIONREAD, &blen);
+				while (blen > 0)	{
+					if( blen = recv(sockfd , buf , 1024 , 0) < 0) {
+						puts("recv failed");
+						breakflag = 1;
+					}
+					// puts("recved");
+					char comp[128], temp[25];
+					// cat: server/file1.txtt: No such file or directory
+					strcpy(comp, "cat: server/");
+					strcat(comp, f);
+					// strcat(comp, ": No such file or directory");
+					// printf("\nFinale comp: %s\n", comp);	// Debug
+					// printf("buf: %s\n", buf); // Debug
+					if (strstr(buf, comp) != NULL) {printf("\nFile `%s` not found\n", f);}
+					else if (buf[0]==0) {printf("Server pipe error\n");}
+					else {printf("\n%s\n", buf);}
+					printf("\n");
+				}
 				free(f);
 				break;
 			}

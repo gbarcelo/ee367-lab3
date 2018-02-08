@@ -141,48 +141,86 @@ int main(int argc, char *argv[])
 			switch(ibuf[0]){
 				case 'p':	{	// "find and cat ./server/<filename>" case
 					filename = &ibuf[1];
-					// fsize = recv(new_fd , filename , 128 , 0);
-					// puts(filename);
-					if (!fork()) { // this is the child process
-						close(sockfd); // child doesn't need the listener
-						int pid, n, pipefd[2];
-						char buf[1023]; // main out buffer
+					char temp[] = "server/";
+					/////////////////////////// attempt at using file ///////////////
+					long fsize;
+					char buf[1024]; // main out buffer
+					char *vbuf = NULL;
+					FILE *f = fopen(strcat(temp,filename),"rb");
+
+					if (f) {
+						fseek(f, 0, SEEK_END);
+						fsize = ftell(f);
+						printf("fsize: %lu\n", fsize);	// --debug
+						fseek(f, 0, SEEK_SET);  //same as rewind(f);
+						vbuf = malloc(fsize);
+						if (buf) {
+							fread(vbuf, fsize, 1, f);
+						}
+						fclose(f);
+					} else {
+						buf[0] = 0;
+					}
+
+					// out: Send fsize
+
+
+					sprintf(buf, "%lu", fsize);
+					if (send(new_fd, buf, sizeof(buf), 0) == -1)
+						perror("send");
+
+
+					// in: Confirm fsize IF fsize ==, MALLOC and SEND vbuf, else LOOPBACK
+
+
+
+
+
+					/////////////////////////// attempt at using file ///////////////
+					// if (!fork()) { // this is the child process
+					// 	close(sockfd); // child doesn't need the listener
+					// 	int pid, n, pipefd[2];
+					// 	char buf[1024]; // main out buffer
 						// char *buf = NULL;
-						if (pipe(pipefd) < 0) error("pipe error");
-						if (!fork()) {	// Begin Child Process for sending "find" to buf
-							close(1);
-							close(0);
-							close(2);
-							close(pipefd[0]);		// Close read-side
-							dup2(pipefd[1],1);	// Duplicates file descriptor
-							dup2(pipefd[1],0);
-							dup2(pipefd[1],2);
+						// if (pipe(pipefd) < 0) error("pipe error");
+						// if (!fork()) {	// Begin Child Process for sending "find" to buf
+						// 	close(1);
+						// 	close(0);
+						// 	close(2);
+						// 	close(pipefd[0]);		// Close read-side
+						// 	dup2(pipefd[1],1);	// Duplicates file descriptor
+						// 	dup2(pipefd[1],0);
+						// 	dup2(pipefd[1],2);
 							// puts("child reaches execl");
-							char temp[] = "server/";
+							// char temp[] = "server/";
 							// filename = strcat(temp,filename);
-							// execl(strcat(comm_path,"cat"), "cat", strcat("server/",filename), (char *)NULL);
-							execl("/bin/cat", "cat", strcat(temp,filename), (char *)NULL);
-							error("cat failed");
-						} else {	// Begin Parent Process for reading buf after ls
+							// execl(strcat(comm_path,"cat"), "cat", strcat(temp,filename), (char *)NULL);
+							// execl("/bin/cat", "cat", strcat(temp,filename), (char *)NULL);
+							// error("cat failed");
+						// } else {	// Begin Parent Process for reading buf after ls
 							// puts("parant begin");
-							close(pipefd[1]);
-							n = read(pipefd[0], buf, 1024);
+							// close(pipefd[1]);
+							// n = read(pipefd[0], buf, 1023);
 							// puts("pipe read");
 							// printf("%d",n);
-							buf[n] = 0; // 0 = null char
+							// buf[n] = 0; // 0 = null char
+							vbuf[fsize] = 0; // 0 = null char
 							// printf("%s\n", strcat("server/",filename));
 							// if (n==0) {strcat(buf,"")} // Deal with 0 on client side
 							// close(pipefd[1]);
-						}
+						// }
 
 						// Stage 1 attempt: end [PARTIAL SUCCESS]
 						// Stage 2 attempt: replace hello world with buf
-						if (send(new_fd, buf, sizeof(buf), 0) == -1)
+						printf("%s\n", vbuf);
+						// if (send(new_fd, buf, sizeof(buf), 0) == -1)
+						if (send(new_fd, vbuf, sizeof(vbuf), 0) == -1)
 							perror("send");
-						// End while loop here? Loop until recv = 0?
+						free(vbuf); //////////// Needed for file reading attempt ////
+					// 	// End while loop here? Loop until recv = 0?
 						close(new_fd);
-						exit(0);
-					}
+						// exit(0);
+					// }
 				}
 					break;
 

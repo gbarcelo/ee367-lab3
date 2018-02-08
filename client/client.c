@@ -82,8 +82,9 @@ int main(int argc, char *argv[])
 	char obuf[1024], arg[128];
 	int osize;
 	int breakflag;
+	int isQuit = 0;
 
-	while (obuf[0]!='q') {
+	while (isQuit==0) {
 		printf("Command (type `h` for help): ");
 		// printf(">> ");
     scanf("%s", obuf);
@@ -92,24 +93,27 @@ int main(int argc, char *argv[])
 		// if (obuf[0]=='q') {break;} // Expand this into switch
 		switch(obuf[0]){
 			case 'q': {
+				isQuit = 1;
 				breakflag = 1;
 				break;
 			}
 
 			case 'p':	{	// "find and cat ./server/<filename>" case
 				scanf("%s", arg);
-				char *f;
-				f = strdup(arg);
+				char *fname, *vbuf;
+				long fsize;
+				fname = strdup(arg);
 				// strcpy(f,arg);
 				strcat(obuf,arg);
-				printf("Checking server . . .");
+				printf("Checking server . . .\n");
 				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				if (osize < 0) {perror("send failed"); return 1;}
 				obuf[osize] = 0;
 
-				if (osize < 0) {
-					puts("Send failed");
-					return 1;
-				}
+				// if (osize < 0) {
+				// 	puts("Send failed");
+				// 	return 1;
+				// }
 				// puts("about to recv"); // Debug
 				//Receive a reply from the server
 				if( recv(sockfd , buf , 1024 , 0) < 0) {
@@ -117,40 +121,73 @@ int main(int argc, char *argv[])
 					breakflag = 1;
 					break;
 				}
-
-				// in: Recieve a fsize
-				if (buf[0] == NULL) {printf("\nFile `%s` not found\n", f); break;}
-				else (buf)
+				// puts("in fsize or null"); // --debug
+				// puts(buf);	// --debug
+				// in: Recieve a fsize IF NULL, FILE DOES NOT EXIST; LOOPBACK HERE
+				if (buf[0] == 0) {printf("File `%s` not found\n\n", fname); break;}
+				else {
+					// if( recv(sockfd , buf , 1024 , 0) < 0) {
+					// 	puts("recv failed");
+					// 	breakflag = 1;
+					// 	break;
+					// }
+					fsize = strtol(buf, NULL, 10);
+				}
+				puts("in success"); // --debug
 
 				// out: Confirm fsize
+				sprintf(obuf, "%ld", fsize);
+				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				if (osize < 0) {perror("send failed"); return 1;}
+				obuf[osize] = 0;
+				puts("out success"); // --debug
 
 				// in: if NULL GOTO: Recieve a fsize(loop), else MALLOC and RECV buffer
-
-
+				if( recv(sockfd , buf , 1024 , 0) < 0) {
+					puts("recv failed");
+					breakflag = 1;
+					break;
+				}
+				if (buf[0] != 0) {
+					vbuf = malloc(fsize);
+					if (vbuf) {
+						if( (fsize = recv(sockfd , vbuf , fsize , 0)) < 0) {
+							puts("recv failed");
+							breakflag = 1;
+							break;
+							vbuf[fsize] = 0;
+						}
+						printf("recv size: %ld\n", fsize);	// --debug
+						printf("%s\n", vbuf);
+						puts("end of vbuf");
+						memset(vbuf,0,fsize);
+						free(vbuf);
+					}
+				} else {printf("Error: protocal failure\n");}
 				/////// end of experiment implementtion; everything //////////////
 				/////// below should be commented/deleted ////////////////////////
-				int blen = 1 ;
-
-				// ioctl(sockfd, FIONREAD, &blen);
-				while (blen > 0)	{
-					if( blen = recv(sockfd , buf , 1024 , 0) < 0) {
-						puts("recv failed");
-						breakflag = 1;
-					}
-					// puts("recved");
-					char comp[128], temp[25];
-					// cat: server/file1.txtt: No such file or directory
-					strcpy(comp, "cat: server/");
-					strcat(comp, f);
-					// strcat(comp, ": No such file or directory");
-					// printf("\nFinale comp: %s\n", comp);	// Debug
-					// printf("buf: %s\n", buf); // Debug
-					if (strstr(buf, comp) != NULL) {printf("\nFile `%s` not found\n", f);}
-					else if (buf[0]==0) {printf("Server pipe error\n");}
-					else {printf("\n%s\n", buf);}
-					printf("\n");
-				}
-				free(f);
+				// int blen = 1 ;
+        //
+				// // ioctl(sockfd, FIONREAD, &blen);
+				// while (blen > 0)	{
+				// 	if( blen = recv(sockfd , buf , 1024 , 0) < 0) {
+				// 		puts("recv failed");
+				// 		breakflag = 1;
+				// 	}
+				// 	// puts("recved");
+				// 	char comp[128], temp[25];
+				// 	// cat: server/file1.txtt: No such file or directory
+				// 	strcpy(comp, "cat: server/");
+				// 	strcat(comp, fname);
+				// 	// strcat(comp, ": No such file or directory");
+				// 	// printf("\nFinale comp: %s\n", comp);	// Debug
+				// 	// printf("buf: %s\n", buf); // Debug
+				// 	if (strstr(buf, comp) != NULL) {printf("\nFile `%s` not found\n", fname);}
+				// 	else if (buf[0]==0) {printf("Server pipe error\n");}
+				// 	else {printf("\n%s\n", buf);}
+				// 	printf("\n");
+				// }
+				free(fname);
 				break;
 			}
 
@@ -195,7 +232,8 @@ int main(int argc, char *argv[])
 		    }
 
 		    //Receive a reply from the server
-		    if( recv(sockfd , buf , 1024 , 0) < 0) {
+
+				if( recv(sockfd , buf , 1024 , 0) < 0) {
 		      puts("recv failed");
 					breakflag = 1;
 				}

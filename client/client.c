@@ -110,8 +110,8 @@ int main(int argc, char *argv[])
 				char f;
 				//printf("%s\n", );
 				//memset(f, '\0',sizeof(f));
-				char *buffera;
-				char *bufferf;
+				char buffera[128];
+				char bufferf[128];
 				buffera=arg;
 				strcpy(bufferf,buffera);
 				f=strdup(bufferf);

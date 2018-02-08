@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	freeaddrinfo(servinfo); // all done with this structure
 
 	// Stage 3 -- After server accepts, send and recieve until Q
-	char obuf[1024], arg[128];
+	char obuf[MAXDATASIZE], arg[128];
 	int osize;
 	int breakflag;
 	int isQuit = 0;
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 				// }
 				// puts("about to recv"); // Debug
 				//Receive a reply from the server
-				if( recv(sockfd , buf , 1024 , 0) < 0) {
+				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 					break;
@@ -137,13 +137,13 @@ int main(int argc, char *argv[])
 
 				// out: Confirm fsize
 				sprintf(obuf, "%ld", fsize);
-				osize = send(sockfd, obuf ,1024, 0);
+				osize = send(sockfd, obuf ,MAXDATASIZE, 0);
 				if (osize < 0) {perror("send failed"); return 1;}
 				obuf[osize] = 0;
 				puts("out success"); // --debug
 
 				// in: if NULL GOTO: Recieve a fsize(loop), else MALLOC and RECV buffer
-				if( recv(sockfd , buf , 1024 , 0) < 0) {
+				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 					break;
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 						int printed;
 						if ((printed = printf("%s\n", vbuf)-1) != fsize) { printf("print failed");}
 						puts("end of vbuf");
-						memset(vbuf,0,fsize);
+						memset(vbuf,0,fsize-1);
 						free(vbuf);
 					}
 				} else {printf("Error: protocal failure\n");}
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
 				}
 
 				//Receive a reply from the server
-				if( recv(sockfd , buf , 1024 , 0) < 0) {
+				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
 					puts("recv failed");
 					breakflag = 1;
 				}
@@ -233,8 +233,8 @@ int main(int argc, char *argv[])
 		    }
 
 		    //Receive a reply from the server
-				memset(buf, 0, 1024);
-				if( recv(sockfd , buf , 1024 , 0) < 0) {
+				memset(buf, 0, MAXDATASIZE-1);
+				if( recv(sockfd , buf , MAXDATASIZE , 0) < 0) {
 		      puts("recv failed");
 					breakflag = 1;
 				}

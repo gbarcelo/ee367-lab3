@@ -53,14 +53,7 @@ int main(int argc, char *argv[])
 	int yes=1;
 	char s[INET6_ADDRSTRLEN];
 	int rv;
-	char comm_path[32];
 
-	if (argc != 2) {
-		argv = NULL;
-		strcpy(comm_path, WILIKIPATH);
-	} else {
-		strcpy(comm_path, LOCALPATH);
-	}
 
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
@@ -301,6 +294,14 @@ int main(int argc, char *argv[])
 					break;
 
 				case 'l':	{	// "ls" case
+					char comm_path[32];
+
+					if (argc != 2) {
+						argv = NULL;
+						strcpy(comm_path, WILIKIPATH);
+					} else {
+						strcpy(comm_path, LOCALPATH);
+					}
 					char binpath[32] = "";
 					strcat(binpath,comm_path);
 					strcat(binpath, "ls");

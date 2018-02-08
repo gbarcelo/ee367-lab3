@@ -6,6 +6,11 @@ server/a.out: server/server.c
 run-server: server/a.out
 	./server/a.out
 
+client2: clean
+	git pull
+	clean
+	client
+
 run-server-local: server/a.out
 	./server/a.out loc
 

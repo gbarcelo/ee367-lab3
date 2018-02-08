@@ -301,12 +301,14 @@ int main(int argc, char *argv[])
 					break;
 
 				case 'l':		// "ls" case
+					puts(strcat(comm_path,"ls")); // --debug
 					//////////////////////////////////////////////////////////////
 					if (!fork()) { // this is the child process
 						close(sockfd); // child doesn't need the listener
 						// Stage 1 attempt: execl with pipe
 						int pid, n, pipefd[2];
 						char buf[1024]; // main out buffer
+						memset(buf, 0, 1024);	// --debug
 						if (pipe(pipefd) < 0) error("pipe error");
 						// Insert "if (recv L)" here?
 						if (!fork()) {	// Begin Child Process for sending "ls" to buf
@@ -320,10 +322,10 @@ int main(int argc, char *argv[])
 							dup2(pipefd[1],0);
 							dup2(pipefd[1],2);
 							execl(strcat(comm_path,"ls"), "ls", "server", (char *)NULL);
-							error("ls failed");
+							error("execl ls failed");
 						} else {	// Begin Parent Process for reading buf after ls
 							close(pipefd[1]);
-							memset(buf, 0, 1024);	// --debug
+							memset(buf, 0, 1024); // --debug
 							n = read(pipefd[0], buf, 1024);
 							buf[n] = 0; // 0 = null char
 							puts(buf); // --debug

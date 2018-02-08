@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 
 				// out: Confirm fsize
 				sprintf(obuf, "%ld", fsize);
-				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				osize = send(sockfd, obuf ,1024, 0);
 				if (osize < 0) {perror("send failed"); return 1;}
 				obuf[osize] = 0;
 				puts("out success"); // --debug
@@ -232,7 +232,7 @@ int main(int argc, char *argv[])
 		    }
 
 		    //Receive a reply from the server
-
+				memset(buf, 0, 1024);
 				if( recv(sockfd , buf , 1024 , 0) < 0) {
 		      puts("recv failed");
 					breakflag = 1;

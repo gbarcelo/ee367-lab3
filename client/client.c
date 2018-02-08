@@ -16,7 +16,7 @@
 
 #define PORT "3601" // the port client will be connecting to (OLD:3490)
 
-#define MAXDATASIZE 100 // max number of bytes we can get at once
+#define MAXDATASIZE 1024 // max number of bytes we can get at once
 
 // get sockaddr, IPv4 or IPv6:
 void *get_in_addr(struct sockaddr *sa)

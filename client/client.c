@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 				// strcpy(f,arg);
 				strcat(obuf,arg);
 				printf("Checking server . . .");
-				osize = send(sockfd, obuf ,sizeof(obuf), 0);
+				o size = send(sockfd, obuf ,sizeof(obuf), 0);
 				obuf[osize] = 0;
 
 				if (osize < 0) {

@@ -1,5 +1,6 @@
 ## EE 367L Lab 3
 Glen Barcelo
+
 Lab Partner: Andrew Millard
 
 February 8, 2018

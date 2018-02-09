@@ -11,4 +11,4 @@ There is a makefile you can browse, but here are the most important commands:
 - `make client` compiles and runs client367
 - `make clean` removes all files in /bin/ and .txt files in /client/
 
-You can manually run the compiled programs (if you wanted to input your own arguments)--they are located in the bin
+You can manually run the compiled programs (if you wanted to input your own arguments)--they are located in the bin.
